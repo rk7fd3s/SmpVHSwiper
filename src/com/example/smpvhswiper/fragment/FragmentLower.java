@@ -10,14 +10,20 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.smpvhswiper.R;
+import com.example.smpvhswiper.item.ItemLower;
 
 public class FragmentLower extends Fragment {
-	private String TAG = "FragmentLower";
+	private static String TAG = "FragmentLower";
+	private static ItemLower item;
+
     private TextView lblText = null;
 
-	public FragmentLower(int number) {
-		TAG += "_" + Integer.toString(number);
-	}
+    public static FragmentLower newInstance(final int position) {
+    	FragmentLower fragment = new FragmentLower();
+    	setItem(ItemLower.newInstance(position));
+    	
+		return fragment;
+    }
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -27,7 +33,7 @@ public class FragmentLower extends Fragment {
 		LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.fragment_lower,container, false);
 
 		lblText = (TextView) layout.findViewById(R.id.lblText);
-		lblText.setText(TAG);
+		lblText.setText(getItem().getText());
 		
 		return layout;
 	}
@@ -111,4 +117,18 @@ public class FragmentLower extends Fragment {
         super.onDetach();
         Log.d(TAG, "onDetach");
     }
+
+	/**
+	 * @return item
+	 */
+	public static ItemLower getItem() {
+		return item;
+	}
+
+	/**
+	 * @param item セットする item
+	 */
+	public static void setItem(ItemLower item) {
+		FragmentLower.item = item;
+	}
 }

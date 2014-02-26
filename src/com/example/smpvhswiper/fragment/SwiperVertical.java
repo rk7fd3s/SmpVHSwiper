@@ -1,10 +1,5 @@
 package com.example.smpvhswiper.fragment;
 
-import java.util.Arrays;
-import java.util.List;
-
-import com.example.smpvhswiper.R;
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -14,29 +9,46 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+
+import com.example.smpvhswiper.R;
 
 public class SwiperVertical extends Fragment {
 	private String TAG = "PagerFragment";
-	private int number = 0;
+	private int position;
 
-	public SwiperVertical(int number) {
-		super();
+	private LinearLayout layout;
+	private SwiperVerticalAdapter swiperVerticalAdapter;
+	private DirectionalViewPager pager;
 
-		this.number = number;
-		TAG += Integer.toString(number);
+	public static SwiperVertical newInstance(final int position) {
+		SwiperVertical fragment = new SwiperVertical();
+		fragment.position = position;
+
+		return fragment;
 	}
 
 	@Override
 	public View onCreateView(final LayoutInflater inflater,
 			final ViewGroup container, final Bundle savedInstanceState) {
-		final View view = inflater.inflate(R.layout.swiper_vertical, null);
-		final DirectionalViewPager pager = (DirectionalViewPager) view
-				.findViewById(R.id.vertical_pager);
+
+		layout = (LinearLayout) inflater.inflate(R.layout.swiper_vertical,
+				container, false);
+
+		// final View view = inflater.inflate(R.layout.swiper_vertical, null);
+		pager = (DirectionalViewPager) layout.findViewById(R.id.vertical_pager);
 
 		Log.d(TAG, "onCreateView");
-		MyPagerAdapter aaa = new MyPagerAdapter(getChildFragmentManager(), number);
-		pager.setAdapter(aaa);
-		return view;
+		if (swiperVerticalAdapter == null) {
+			swiperVerticalAdapter = new SwiperVerticalAdapter(
+					getChildFragmentManager(), position);
+		}
+		pager.setAdapter(swiperVerticalAdapter);
+
+		// layout = (LinearLayout)
+		// inflater.inflate(R.layout.fragment_lower,container, false);
+
+		return layout;
 	}
 
 	/***
@@ -120,28 +132,33 @@ public class SwiperVertical extends Fragment {
 		Log.d(TAG, "onDetach");
 	}
 
-	private static class MyPagerAdapter extends FragmentStatePagerAdapter {
+	private static class SwiperVerticalAdapter extends
+			FragmentStatePagerAdapter {
 		private String TAG = "MyPagerAdapter";
+		private int number;
 
-		private List<Fragment> fragments;
-
-		public MyPagerAdapter(FragmentManager fm, int number) {
+		public SwiperVerticalAdapter(FragmentManager fm, int number) {
 			super(fm);
 			Log.d(TAG, fm.toString());
-
-			// 適当なFragmentをセット
-			fragments = Arrays.asList(new FragmentUpper(number), new FragmentLower(number));
+			
+			this.number = number;
 		}
 
 		@Override
 		public Fragment getItem(int position) {
 			Log.d(TAG, "getItem" + Integer.toString(position));
-			return fragments.get(position);
+
+			switch (position) {
+			case 0:
+				return FragmentUpper.newInstance(number);
+			default:
+				return FragmentLower.newInstance(number);
+			}
 		}
 
 		@Override
 		public int getCount() {
-			return fragments.size();
+			return 2;
 		}
 	}
 }

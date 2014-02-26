@@ -10,14 +10,20 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.smpvhswiper.R;
+import com.example.smpvhswiper.item.ItemUpper;
 
 public class FragmentUpper extends Fragment {
-	private String TAG = "FragmentUpper";
+	private static String TAG = "FragmentUpper";
+	private static ItemUpper item;
+	
     private TextView lblText = null;
 
-	public FragmentUpper(int number) {
-		TAG += "_" + Integer.toString(number);
-	}
+	public static FragmentUpper newInstance(int position) {
+    	FragmentUpper fragment = new FragmentUpper();
+    	setItem(ItemUpper.newInstance(position));
+    	
+		return fragment;
+    }
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -27,7 +33,7 @@ public class FragmentUpper extends Fragment {
 		LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.fragment_upper,container, false);
 
 		lblText = (TextView) layout.findViewById(R.id.lblText);
-		lblText.setText(TAG);
+		lblText.setText(getItem().getText());
 		
 		return layout;
 	}
@@ -113,4 +119,18 @@ public class FragmentUpper extends Fragment {
         super.onDetach();
         Log.d(TAG, "onDetach");
     }
+
+	/**
+	 * @return item
+	 */
+	public static ItemUpper getItem() {
+		return item;
+	}
+
+	/**
+	 * @param item セットする item
+	 */
+	public static void setItem(ItemUpper item) {
+		FragmentUpper.item = item;
+	}
 }
